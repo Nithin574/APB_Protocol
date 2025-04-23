@@ -13,6 +13,7 @@ module Slave_1 #(
   input                         Psel,
   input                         Penable,
   input                         Pwrite,
+  input [WIDTH / 8 - 1 : 0]     Pstrb,
   input [ADD_WIDTH - 2 : 0]     Paddr,
   input [WIDTH - 1 : 0]         Pwdata,
   //---------------------------------------------------------------------------
@@ -29,8 +30,9 @@ module Slave_1 #(
   localparam DEPTH = 2 ** (ADD_WIDTH - 1);
   //---------------------------------------------------------------------------
 
-  //Memory Definition
+  //Local registers definition
   //---------------------------------------------------------------------------
+  reg [1 : 0] count;
   reg [WIDTH - 1 : 0] mem [0 : DEPTH - 1];
   //---------------------------------------------------------------------------
 
@@ -42,7 +44,7 @@ module Slave_1 #(
     else begin
           if(Psel && Penable) begin
             if(!Pwrite)
-          Prdata <=  mem[Paddr];
+              Prdata <=  mem[Paddr];
           end
           else begin
             Prdata <= 'b0;
@@ -55,15 +57,29 @@ module Slave_1 #(
   //---------------------------------------------------------------------------
   always @(posedge Pclk) begin
     if(Psel && Penable) begin
-      if(Pwrite)
-        mem[Paddr] <= Pwdata;
+      if(Pwrite) begin
+        if(Pstrb[0] == 1'b1) mem[Paddr][7:0]   <= Pwdata[7:0];
+        if(Pstrb[1] == 1'b1) mem[Paddr][15:8]  <= Pwdata[15:8];
+        if(Pstrb[2] == 1'b1) mem[Paddr][23:16] <= Pwdata[23:16];
+        if(Pstrb[3] == 1'b1) mem[Paddr][31:24] <= Pwdata[31:24];
     end
   end
   //---------------------------------------------------------------------------
 
-  //Pready assignment based on sel and enable
+  //Pready assignment based on sel, enable and count  value
   //---------------------------------------------------------------------------
-  assign Pready = Psel && Penable;
+  always @(posedge Pclk) begin
+    if(!Presetn)
+      count <= 'b0;
+    else begin
+      if(Psel && Penable)
+        count <= count + 1'b1;
+      else
+        count <= 'b0;
+    end
+  end
+
+  assign Pready = Psel && Penable && count == 3;
   //---------------------------------------------------------------------------
 
 endmodule

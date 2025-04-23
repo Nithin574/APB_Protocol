@@ -12,6 +12,7 @@ module ApbMaster #(
   //---------------------------------------------------------------------------
   input                         transfer,
   input                         Req_read_write,
+  input [WIDTH / 8 - 1 : 0]     Req_Pstrb,
   input [ADD_WIDTH-1 : 0]       Req_addr,
   input [WIDTH-1 : 0]           Req_wdata,
   //---------------------------------------------------------------------------
@@ -25,8 +26,10 @@ module ApbMaster #(
   //To ApbSlave
   //---------------------------------------------------------------------------
   output reg                    Psel_1,
+  output reg                    Psel_2,
   output                        Pwrite,
   output reg                    Penable,
+  output [WIDTH / 8 - 1 : 0]    Pstrb,
   output [ADD_WIDTH - 2 : 0]    Paddr,
   output [WIDTH - 1 : 0]        Pwdata,
   //---------------------------------------------------------------------------
@@ -74,6 +77,7 @@ module ApbMaster #(
     case(state)
       IDLE : begin
         Psel_1  = 1'b0;
+        Psel_2  = 1'b0;
         Penable = 1'b0;
         if(transfer) begin
           next_state = SETUP;
@@ -85,14 +89,17 @@ module ApbMaster #(
       end
 
       SETUP : begin
-        Psel_1     = psel? 1'b1:1'b0;
+        Psel_1     = psel? 1'b0:1'b1;
+        Psel_2     = psel? 1'b1:1'b0;
         Penable    = 1'b0;
         next_state = ACCESS;
       end
 
       ACCESS : begin
-        Psel_1  = psel? 1'b1:1'b0;
+        Psel_1     = psel? 1'b0:1'b1;
+        Psel_2     = psel? 1'b1:1'b0;
         Penable = 1'b1;
+
         if(Pready) begin
           if(transfer) begin
             next_state = SETUP;
@@ -125,6 +132,7 @@ module ApbMaster #(
   //---------------------------------------------------------------------------
   assign Pwrite    = Req_read_write;
   assign Pwdata    = Req_wdata;
+  assign Pstrb     = Req_Pstrb;
   assign Paddr     = Req_addr[ADD_WIDTH - 2:0];
   assign Req_rdata = Prdata;
   //---------------------------------------------------------------------------

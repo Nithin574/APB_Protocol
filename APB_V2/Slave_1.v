@@ -13,6 +13,7 @@ module Slave_1 #(
   input                         Psel,
   input                         Penable,
   input                         Pwrite,
+  input [WIDTH / 8 - 1 : 0]     Pstrb,
   input [ADD_WIDTH - 2 : 0]     Paddr,
   input [WIDTH - 1 : 0]         Pwdata,
   //---------------------------------------------------------------------------
@@ -45,7 +46,7 @@ module Slave_1 #(
           Prdata <=  mem[Paddr];
           end
           else begin
-            Prdata <= 'b0;
+            Prdata <= 1'b0;
           end
     end
   end
@@ -55,8 +56,12 @@ module Slave_1 #(
   //---------------------------------------------------------------------------
   always @(posedge Pclk) begin
     if(Psel && Penable) begin
-      if(Pwrite)
-        mem[Paddr] <= Pwdata;
+      if(Pwrite) begin
+        if(Pstrb[0] == 1'b1) mem[Paddr][7:0]   <= Pwdata[7:0];
+        if(Pstrb[1] == 1'b1) mem[Paddr][15:8]  <= Pwdata[15:8];
+        if(Pstrb[2] == 1'b1) mem[Paddr][23:16] <= Pwdata[23:16];
+        if(Pstrb[3] == 1'b1) mem[Paddr][31:24] <= Pwdata[31:24];
+      end
     end
   end
   //---------------------------------------------------------------------------
