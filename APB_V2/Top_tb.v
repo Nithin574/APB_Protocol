@@ -38,9 +38,9 @@ module Top_tb #(parameter ADD_WIDTH = 9, WIDTH = 32) ();
     #10 presetn = 1;
 
     // Display signals during simulation
-    $monitor("Time=%0t | pclk=%b | presetn=%b | transfer=%b | Req_read_write=%b | Req_addr=%h | Req_wdata=%h | Req_rdata=%h", 
+    $monitor("Time=%0t | pclk=%b | presetn=%b | transfer=%b | Req_read_write=%b | Req_addr=%h | Req_wdata=%h | Req_rdata=%h",
              $time, pclk, presetn, transfer, Req_read_write, Req_addr, Req_wdata, Req_rdata);
-             
+
 
     // Slave 1
     //write test
@@ -52,43 +52,49 @@ module Top_tb #(parameter ADD_WIDTH = 9, WIDTH = 32) ();
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1110
     #20 Req_read_write = 1; Req_pstrb = 4'b1110; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1101
     #20 Req_read_write = 1; Req_pstrb = 4'b1101; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1011
     #20 Req_read_write = 1; Req_pstrb = 4'b1011; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=0111
     #20 Req_read_write = 1; Req_pstrb = 4'b0111; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=0000
     #20 Req_read_write = 1; Req_pstrb = 4'b0000; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #20 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
+    //strobe=0001
+    #20 Req_read_write = 1; Req_pstrb = 4'b0001; Req_addr = 9'h003; Req_wdata  = 32'h00000003;
+    repeat(2) begin
+      #20 Req_addr = Req_addr + 1'b1;
+          Req_wdata = Req_wdata + 1'b1;
+    end
     //-----------------------------------------------------------------------------------------------------------------
-    
+
     //Read transfer
     #20 Req_read_write = 0; Req_addr = 9'h000;
     repeat(14) begin
@@ -108,35 +114,35 @@ module Top_tb #(parameter ADD_WIDTH = 9, WIDTH = 32) ();
       #50 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1110
     #50 Req_read_write = 1; Req_pstrb = 4'b1110; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #50 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1101
     #50 Req_read_write = 1; Req_pstrb = 4'b1101; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #50 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=1011
     #50 Req_read_write = 1; Req_pstrb = 4'b1011; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #50 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=0111
     #50 Req_read_write = 1; Req_pstrb = 4'b0111; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
       #50 Req_addr = Req_addr + 1'b1;
           Req_wdata = Req_wdata + 1'b1;
     end
-    
+
     //strobe=0000
     #50 Req_read_write = 1; Req_pstrb = 4'b0000; Req_addr = Req_addr + 1'b1; Req_wdata = Req_wdata + 1'b1;;
     repeat(2) begin
@@ -144,7 +150,7 @@ module Top_tb #(parameter ADD_WIDTH = 9, WIDTH = 32) ();
           Req_wdata = Req_wdata + 1'b1;
     end
     //-----------------------------------------------------------------------------------------------------------------
-    
+
     //Read transfer
     //-----------------------------------------------------------------------------------------------------------------
     #50 Req_read_write = 0; Req_addr = 9'h100;

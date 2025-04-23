@@ -116,6 +116,7 @@ module ApbMaster #(
       end
       default : begin
         Psel_1     = 1'b0;
+        Psel_2     = 1'b0;
         Penable    = 1'b0;
         next_state = IDLE;
       end
