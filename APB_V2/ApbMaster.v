@@ -98,7 +98,7 @@ module ApbMaster #(
       ACCESS : begin
         Psel_1     = psel? 1'b0:1'b1;
         Psel_2     = psel? 1'b1:1'b0;
-        Penable = 1'b1;
+        Penable    = 1'b1;
 
         if(Pready) begin
           if(transfer) begin
